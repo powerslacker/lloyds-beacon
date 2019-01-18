@@ -1,30 +1,15 @@
+
 #!/bin/bash
 
-# handle user input
-case $1 in 
-  add) add $2;;
-  rm) remove $2;;
-  list) list;;
-  *) jump $1;;
-esac;
+# create .beacons file if it does not exist
+if [ ! -f ~/.beacons ]; then
+  touch  ~/.beacons
+fi
 
-# adds the current directory to the beacon list via its name
-add() {
-  local name="$1"
-  local foundBeacon=$(findBeacon "$name")
-  if [[ -z "$foundBeacon" ]]; then
-    echo "created beacon: $name => $(pwd)"
-    echo "$name:$(pwd)" >> ~/.beacons
-  else
-    echo "failed to create beacon: you already have a beacon named $name"
-  fi
-}
 
-# removes a beacon from the list via its name
-remove() {
-  local name="$1"
-  $(sed -i "/$name:/d" ~/.beacons)
-  echo "removed beacon $name"
+# helper func to find a beacon in the file
+findBeacon() {
+  echo "$(grep $1: ~/.beacons)"
 }
 
 # jumps to a beacon directory via its name
@@ -47,12 +32,46 @@ jump() {
   cd $cleaned
 }
 
+# handle user input
+case $1 in
+  add) add $2;;
+  rm) remove $2;;
+  list) list;;
+  "") echo "
+'||'      '||                        '||  '           '||''|.
+ ||        ||    ...   .... ...    .. ||     ....      ||   ||    ....   ....     ....    ...   .. ...
+ ||        ||  .|  '|.  '|.  |   .'  '||    ||. '      ||'''|.  .|...|| '' .||  .|   '' .|  '|.  ||  ||
+ ||        ||  ||   ||   '|.|    |.   ||    . '|..     ||    || ||      .|' ||  ||      ||   ||  ||  ||
+.||.....| .||.  '|..|'    '|     '|..'||.   |'..|'    .||...|'   '|...' '|..'|'  '|...'  '|..|' .||. ||.
+                       .. |
+                        ''
+";;
+  *) jump $1;;
+esac;
+
+# adds the current directory to the beacon list via its name
+add() {
+  local name="$1"
+  local foundBeacon=$(findBeacon "$name")
+  if [[ -z "$foundBeacon" ]]; then
+    echo "created beacon: $name => $(pwd)"
+    echo "$name:$(pwd)" >> ~/.beacons
+  else
+    echo "failed to create beacon: you already have a beacon named $name"
+  fi
+}
+
+# removes a beacon from the list via its name
+remove() {
+  local name="$1"
+  $(sed -i "/$name:/d" ~/.beacons)
+  echo "removed beacon $name"
+}
+
+
+
 # prints the beacons file to the terminal
 list() {
   cat ~/.beacons
 }
 
-# helper func to find a beacon in the file
-findBeacon() {
-  echo "$(grep $1: ~/.beacons)"
-}
