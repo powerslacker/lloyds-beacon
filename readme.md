@@ -12,6 +12,6 @@
 
 * ```[alias] add [name]``` Adds a beacon to the current directory using the given name
 * ```[alias] [name]``` Returns to they directory of a beacon with the given name
-* ```[alias] [name]``` Deletes a beacon with the given name
+* ```[alias] rm [name]``` Deletes a beacon with the given name
 * ```[alias] list``` Displays all beacons
 
